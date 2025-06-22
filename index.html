@@ -32,7 +32,7 @@
   <h1>Piecey Name Generator</h1>
   <!--/netlify-cms-widget-->
 
-  <input type="text" id="userName" placeholder="Enter your name"><br>
+  <input type="text" id="userName" placeholder="Enter a name"><br>
 
   <!--netlify-cms-widget name="buttonText" label="Generate Button Text"-->
   <button id="generateButton" disabled>Loading names...</button>
@@ -77,7 +77,7 @@
     document.getElementById("generateButton").addEventListener("click", function() {
       const userName = document.getElementById("userName").value.trim();
       if (userName === "") {
-        document.getElementById("name").textContent = "Please enter your name.";
+        document.getElementById("name").textContent = "Please enter a name.";
         return;
       }
 
