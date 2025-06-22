@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Name Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f9f9f9;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    #name {
+      font-size: 24px;
+      margin-top: 20px;
+      color: #333;
+    }
+    #status {
+      font-size: 14px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <!--netlify-cms-widget name="mainTitle" label="Main Heading"-->
+  <h1>Piecey Name Generator</h1>
+  <!--/netlify-cms-widget-->
+
+  <input type="text" id="userName" placeholder="Enter your name"><br>
+
+  <!--netlify-cms-widget name="buttonText" label="Generate Button Text"-->
+  <button id="generateButton" disabled>Loading names...</button>
+  <!--/netlify-cms-widget-->
+
+  <div id="status"></div>
+
+  <!--netlify-cms-widget name="outputName" label="Generated Name Output"-->
+  <div id="name"></div>
+  <!--/netlify-cms-widget-->
+
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUIjBpAJ-ui6dyJqAXLDpnU0ZWtnnLUG_vEJD1wdFgp5vOyshH5hhY7jl7QICWCiOXkymmpX6y4RQt/pub?output=csv";
+    let firstNames = [];
+    let lastNames = [];
+
+    fetch(sheetURL)
+      .then(response => response.text())
+      .then(data => {
+        const lines = data.split("\n").slice(1); // Skip header
+        lines.forEach(line => {
+          const [first, last] = line.split(",");
+          if (first && last) {
+            firstNames.push(first.trim());
+            lastNames.push(last.trim());
+          }
+        });
+
+        if (firstNames.length > 0 && lastNames.length > 0) {
+          document.getElementById("generateButton").disabled = false;
+          document.getElementById("generateButton").textContent = "Generate Name";
+          document.getElementById("status").textContent = "Names loaded successfully.";
+        } else {
+          document.getElementById("status").textContent = "No names found in the sheet.";
+        }
+      })
+      .catch(error => {
+        document.getElementById("status").textContent = "Failed to load names.";
+        console.error(error);
+      });
+
+    document.getElementById("generateButton").addEventListener("click", function() {
+      const userName = document.getElementById("userName").value.trim();
+      if (userName === "") {
+        document.getElementById("name").textContent = "Please enter your name.";
+        return;
+      }
+
+      const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+      document.getElementById("name").textContent = `${first} ${last} ${userName}`;
+    });
+  </script>
+
+</body>
+</html>
